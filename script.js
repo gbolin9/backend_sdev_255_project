@@ -2,6 +2,7 @@ const express = require('express');
 const Course = require("./models/course")
 const Student = require("./models/Students")
 const Teacher = require("./models/teacher")
+require("./db")
 
 var cors = require("cors")
 
@@ -198,6 +199,7 @@ router.delete('/teacher/:id', async function(req, res) {
 
 app.use("/api", router)
 
-app.listen(3000);
-
+app.listen(5000, () => {
+    console.log("Server running on port 5000")
+})
 

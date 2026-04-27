@@ -1,0 +1,1 @@
+- packages.json changed "nodemond" to "nodemon" and "devStart" to just dev
