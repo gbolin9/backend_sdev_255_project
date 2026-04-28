@@ -5,6 +5,8 @@
   "main": "script.js",
   "scripts": {
     "devStart": "nodemond script.js"
+    "build": "npm install",
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
