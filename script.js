@@ -198,15 +198,15 @@ router.delete('/teacher/:id', async function(req, res) {
 
 router.post("/login", async function(req, res) {
     try {
-        const { username, password } = req.body;
+        const { loginName, password } = req.body;
 
         // 1. Search Teachers
-        let user = await Teacher.findOne({ username: username });
+        let user = await Teacher.findOne({ loginName: loginName });
         let role = "teacher";
 
         // 2. Search Students if not a Teacher
         if (!user) {
-            user = await Student.findOne({ username: username });
+            user = await Student.findOne({ loginName: loginName });
             role = "student";
         }
 
@@ -217,7 +217,7 @@ router.post("/login", async function(req, res) {
         // 3. Check password
         if (user.password === password) {
             // Include username and role in the token
-            const token = jwt.sign({ username: user.username, role: role, id: user._id }, secret);
+            const token = jwt.sign({ loginName: user.loginName, role: role, id: user._id }, secret);
             res.json({ token: token, role: role });
         } else {
             res.status(401).json({ error: "Bad password" });
