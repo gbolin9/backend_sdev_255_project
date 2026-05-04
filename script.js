@@ -202,12 +202,12 @@ router.post("/login", async function(req, res) {
 
         // 1. Search Teachers
         let user = await Teacher.findOne({ username: username });
-        let role = "TEACHER";
+        let role = "teacher";
 
         // 2. Search Students if not a Teacher
         if (!user) {
             user = await Student.findOne({ username: username });
-            role = "STUDENT";
+            role = "student";
         }
 
         if (!user) {
