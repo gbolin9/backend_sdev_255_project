@@ -1,4 +1,4 @@
-const mongoose = require('../db'); // Assuming this exports mongoose
+const mongoose = require('../db'); //
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const teacherSchema = new mongoose.Schema({
@@ -7,7 +7,7 @@ const teacherSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   loginName: { type: String, unique: true },
   password: String,
-  role: { type: String, default: 'teacher' } // Added quotes here
+  role: { type: String, default: 'teacher' } // 
 });
 
 // This adds the 'teacherID' field automatically
