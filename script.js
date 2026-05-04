@@ -107,15 +107,19 @@ router.post("/Students", async function(req, res) {
 });
 
 router.post("/teacher", async function(req,res){
-    try {
-        const teacher = await new Teacher(req.body);
+   try {
+        const teacherData = req.body;
+
+        const salt = await bcrypt.genSalt(10);
+        teacherData.password = await bcrypt.hash(teacherData.password, salt);
+
+        const teacher = new Teacher(studentData);
         await teacher.save();
-        res.status(201).json(teacher)
+        res.status(201).json(teacher);
+    } catch (err) {
+        res.status(400).send(err.message);
     }
-    catch (err) {
-        res.status(400).send(err)
-    }
-})
+});
 
 //update a course, teacher, or student entry
 router.put("/course/:id", async(req,res) => {
