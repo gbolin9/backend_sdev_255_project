@@ -7,7 +7,7 @@ const teacherSchema = new mongoose.Schema({
   email: { type: String, unique: true, lowercase: true },
   loginName: { type: String, unique: true },
   password: String,
-  role: { type: String, default: 'teacher' } /
+  role: { type: String, default: 'teacher' } 
 });
 
 // This adds the 'teacherID' field automatically
