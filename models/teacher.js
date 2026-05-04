@@ -4,7 +4,7 @@ const db = require("../db");
 const teacherSchema = new db.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
-  teacherID: { type: Number, unique: true, required: true }, 
+  teacherID: { type: Number, unique: true }, 
   email: { type: String, unique: true, lowercase: true },
   loginName: { type: String, unique: true },
   password: String,
