@@ -5,7 +5,7 @@ const Course = db.model("Course",{
     teacherID: Number,
     studentID: [Number],
     courseName: String,
-    subectArea: String,
+    subjectArea: String,
     description: String,
     credits: Number
 })
