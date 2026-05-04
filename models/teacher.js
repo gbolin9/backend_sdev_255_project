@@ -1,18 +1,18 @@
-const mongoose = require('../db'); //
-const AutoIncrement = require('mongoose-sequence')(mongoose);
+const db = require("../db")
 
-const teacherSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  email: { type: String, unique: true, lowercase: true },
-  loginName: { type: String, unique: true },
-  password: String,
-  role: { type: String, default: 'teacher' } 
-});
-
-// This adds the 'teacherID' field automatically
-teacherSchema.plugin(AutoIncrement, { id: 'teacher_id_counter', inc_field: 'teacherID' });
-
-const Teacher = mongoose.model('Teacher', teacherSchema);
+const Teacher = db.model("Teacher",{
+    firstName: String,
+    lastName: String,
+    teacherID: Number,
+    email: {type: String, unique:true, lowercase:true},
+    teacherID: { 
+    type: Number, 
+    unique: true, 
+    default: () => Math.floor(100000 + Math.random() * 900000) // Generates 6-digit ID
+  },
+    loginName: {type: String, unique: true},
+    password: String,
+    role: {type: String, default: "teacher"}
+})
 
 module.exports = Teacher;
