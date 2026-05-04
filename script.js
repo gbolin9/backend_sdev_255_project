@@ -2,6 +2,7 @@ const express = require('express');
 const Course = require("./models/course")
 const Student = require("./models/Students")
 const Teacher = require("./models/teacher")
+const bcrypt = require('bcryptjs');
 
 var cors = require("cors")
 
@@ -88,16 +89,20 @@ router.post("/course", async function(req,res){
     }
 })
 
-router.post("/Students", async function(req,res){
+router.post("/Students", async function(req, res) {
     try {
-        const student = await new Student(req.body);
+        const studentData = req.body;
+        
+        const salt = await bcrypt.genSalt(10);
+        studentData.password = await bcrypt.hash(studentData.password, salt);
+
+        const student = new Student(studentData);
         await student.save();
-        res.status(201).json(student)
+        res.status(201).json(student);
+    } catch (err) {
+        res.status(400).send(err.message);
     }
-    catch (err) {
-        res.status(400).send(err)
-    }
-})
+});
 
 router.post("/teacher", async function(req,res){
     try {
