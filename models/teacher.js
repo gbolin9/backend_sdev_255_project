@@ -1,17 +1,22 @@
 const db = require("../db")
 
-const Teacher = db.model("Teacher",{
-    firstName: String,
-    lastName: String,
-    email: {type: String, unique:true, lowercase:true},
-    teacherID: {
-    type: Number,
-    unique: true,
-    default: () => Math.floor(100000 + Math.random() * 900000) // Generates 6-digit ID
+const mongoose = require('mongoose');
+const teacherSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
+  email: {type: String, unique:true, lowercase:true},
+  loginName: {type: String, unique: true},
+  teacherID: { 
+    type: Number, 
+    unique: true, 
+    immutable: true, // <--- This prevents it from ever changing
+    default: () => Math.floor(100000 + Math.random() * 900000)
   },
-    loginName: {type: String, unique: true},
-    password: String,
-    role: {type: String, default: "teacher"}
-})
+  password: String,
+  role: {type: String, default: "teacher"}
+});
+
+const Teacher = db.model("Teacher", teacherSchema);
+
 
 module.exports = Teacher;

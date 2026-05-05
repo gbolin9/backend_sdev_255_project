@@ -21,20 +21,20 @@ router.get("/course", async function(req,res){
         res.json(courses)
 
     }
-    catch(res){
-        res.status(400).send(err);
+    catch(err){
+        res.status(400).send(err.message);
 
     }
 })
 
-router.get("/Students", async function(req,res){
+router.get("/students", async function(req,res){
     try {
         const students= await Student.find();
         res.json(students)
 
     }
-    catch(res){
-        res.status(400).send(err);
+    catch(err){
+        res.status(400).send(err.message);
 
     }
 })
@@ -45,8 +45,8 @@ router.get("/teacher", async function(req,res){
         res.json(teachers)
 
     }
-    catch(res){
-        res.status(400).send(err);
+    catch(err){
+        res.status(400).send(err.message);
 
     }
 })
@@ -57,26 +57,48 @@ router.get('/course/:id', async (req, res) => {
         const course = await Course.findById(req.params.id);
         res.json(course);
     } catch (err) {
-        res.status(400).send(err);
+        res.status(400).send(err.message);
     }
 });
 
-router.get('/Students/:id', async (req, res) => {
+router.get('/students/:id', async (req, res) => {
   try {
-    const student = await Student.findById(req.params.id);
+    const searchID = req.params.id;
+
+
+    const student = await Student.findOne({
+      $or: [
+        { studentID: Number(searchID) },
+        { _id: searchID.length === 24 ? searchID : null } 
+      ]
+    });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
     res.json(student);
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send("Error fetching student");
   }
 });
-
 router.get("/teacher/:id", async(req,res) =>{
     try {
-        const teacher = await Teacher.findById(req.params.id)
-        res.json(teacher)
+       const searchID = req.params.id;
+       const teacher = await Teacher.findOne({
+      $or: [
+        { teacherID: Number(searchID) },
+        { _id: searchID.length === 24 ? searchID : null } 
+      ]
+    });
+
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+    res.json(teacher)
     }
     catch (err){
-        res.status(400).send(err)
+        res.status(400).send(err.message)
     }
 })
 //Add a new entry in teacher, student, or coures
@@ -87,7 +109,7 @@ router.post("/course", async function(req,res){
         res.status(201).json(course)
     }
     catch (err) {
-        res.status(400).send(err)
+        res.status(400).send(err.message)
     }
 })
 
@@ -129,7 +151,7 @@ router.put("/course/:id", async(req,res) => {
         res.sendStatus(204)
     }
     catch(err){
-        res.status(400).send(err)
+        res.status(400).send(err.message)
     }
     
 })
@@ -141,7 +163,7 @@ router.put("/Student/:id", async(req,res) => {
         res.sendStatus(204)
     }
     catch(err){
-        res.status(400).send(err)
+        res.status(400).send(err.message)
     }
     
 })
@@ -153,7 +175,7 @@ router.put("/teacher/:id", async(req,res) => {
         res.sendStatus(204)
     }
     catch(err){
-        res.status(400).send(err)
+        res.status(400).send(err.message)
     }
     
 })
@@ -171,7 +193,7 @@ router.delete('/course/:id', async function(req, res) {
    }
    catch (err)
    {
-      res.status(400).send(err);
+      res.status(400).send(err.message);
    }
 });
 
@@ -187,7 +209,7 @@ router.delete('/Student/:id', async function(req, res) {
    }
    catch (err)
    {
-      res.status(400).send(err);
+      res.status(400).send(err.message);
    }
 });
 
@@ -203,7 +225,7 @@ router.delete('/:id', async function(req, res) {
    }
    catch (err)
    {
-      res.status(400).send(err);
+      res.status(400).send(err.message);
    }
 });
 
