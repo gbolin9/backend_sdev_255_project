@@ -53,14 +53,26 @@ router.get("/teacher", async function(req,res){
 
 //Get one entry in teacher, students, and courses
 router.get('/course/:id', async (req, res) => {
-    try {
-        const course = await Course.findById(req.params.id);
-        res.json(course);
-    } catch (err) {
-        res.status(400).send(err.message);
-    }
-});
+  try {
+    const searchID = req.params.id;
 
+    // Searches for the numeric courseID OR the 24-character hex MongoDB _id
+    const course = await Course.findOne({
+      $or: [
+        { courseID: searchID},
+        { _id: searchID.length === 24 ? searchID : null }
+      ]
+    });
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    res.json(course);
+  } catch (err) {
+    res.status(400).send("Error fetching course: " + err.message);
+  }
+});
 router.get('/students/:id', async (req, res) => {
   try {
     const searchID = req.params.id;
@@ -161,6 +173,10 @@ router.put("/Students/:id", async(req,res) => {
     const searchID = req.params.id;
     const studentData = req.body;
 
+        if (updateData.password) {
+                const salt = await bcrypt.genSalt(10);
+                studentData.password = await bcrypt.hash(updateData.password, salt);
+        }
     const result = await Student.updateOne(
       { 
         $or: [ 
@@ -184,7 +200,14 @@ router.put("/Students/:id", async(req,res) => {
 router.put("/teacher/:id", async(req,res) => {
     try{
         const teacher = req.body
-        await Teacher.updateOne({_id :req.params.id}, teacher)
+        if (updateData.password) {
+            const salt = await bcrypt.genSalt(10);
+            teacherData.password = await bcrypt.hash(updateData.password, salt);
+        }
+        const result = await Teacher.updateOne({_id :req.params.id}, teacher)
+        if (result.matchedCount === 0){
+            return res.status(404).json({ message :"Teacher not found"});
+        }
         res.sendStatus(204)
     }
     catch(err){
@@ -228,7 +251,7 @@ router.delete('/Students/:id', async function(req, res) {
 
 router.delete('/:id', async function(req, res) {
    try {
-      const result = await Teacher.deleteOne({ _id: req.query._id });
+      const result = await Teacher.deleteOne({ _id: req.params._id });
       if (result.deletedCount === 0) {
          res.sendStatus(404);
       } 
